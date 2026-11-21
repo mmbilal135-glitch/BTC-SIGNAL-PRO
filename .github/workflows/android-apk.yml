@@ -1,0 +1,49 @@
+
+name: Build BTC SIGNAL PRO APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Extract Android Project
+        run: |
+          unzip BTC_SIGNAL_PRO_MOBILE_BUILD.zip
+          echo "Project extracted"
+
+      - name: Install SDK
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+
+      - name: Build APK
+        run: gradle -p btc_signal_pro --no-daemon :app:assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: BTC-SIGNAL-PRO-debug-apk
+          path: btc_signal_pro/app/build/outputs/apk/debug/app-debug.apk
