@@ -40,7 +40,7 @@ jobs:
 
       - name: Extract Project
         run: |
-          unzip -q BTC_SIGNAL_PRO_MOBILE_BUILD.zip -d extracted
+          unzip -q btc_signal_pro.zip -d extracted
           find extracted -type f | head -30
 
       - name: Build APK
